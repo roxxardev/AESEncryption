@@ -33,21 +33,34 @@ public class AESEncryption {
         keyValue = secretKey.getEncoded();
     }
 
-    public String encryptText(String data) throws Exception {
+    public String encryptAndEncodeBASE64(String data) throws Exception {
+        return encodeBASE64(encryptText(data));
+    }
+
+    public String decodeBASE64AndDecrypt(String encryptedData) throws Exception {
+        return decryptText(decodeBASE64(encryptedData));
+    }
+
+    public byte[] encryptText(String data) throws Exception {
         Key key = generateKey();
         Cipher c = Cipher.getInstance(ALGORITHM);
         c.init(Cipher.ENCRYPT_MODE, key);
-        byte[] encVal = c.doFinal(data.getBytes());
-        return new BASE64Encoder().encode(encVal);
+        return c.doFinal(data.getBytes());
     }
 
-    public String decryptText(String encryptedData) throws Exception {
+    public String decryptText(byte[] encryptedData) throws Exception {
         Key key = generateKey();
         Cipher c = Cipher.getInstance(ALGORITHM);
         c.init(Cipher.DECRYPT_MODE, key);
-        byte[] decodeValue = new BASE64Decoder().decodeBuffer(encryptedData);
-        byte[] decValue = c.doFinal(decodeValue);
-        return new String(decValue);
+        return new String(c.doFinal(encryptedData));
+    }
+
+    public String encodeBASE64(byte[] bytes) {
+        return new BASE64Encoder().encode(bytes);
+    }
+
+    public byte[] decodeBASE64(String s) throws IOException {
+        return new BASE64Decoder().decodeBuffer(s);
     }
 
     public void encryptFile(File inputFile, File outputFile) throws Exception{

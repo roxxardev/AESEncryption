@@ -40,7 +40,7 @@ public class Controller {
     public void encryptText(ActionEvent actionEvent) {
         try {
             textAesEncryption = new AESEncryption();
-            String encryptedText = textAesEncryption.encryptText(plainTextField.getText());
+            String encryptedText = textAesEncryption.encryptAndEncodeBASE64(plainTextField.getText());
             saveTextToFile(encryptedText);
             plainTextField.setText("");
             encryptedTextField.setText(encryptedText);
@@ -54,7 +54,7 @@ public class Controller {
         if(textAesEncryption == null) return;
         try {
             String encryptedText = readTextFromFile();
-            String decryptedText = textAesEncryption.decryptText(encryptedText);
+            String decryptedText = textAesEncryption.decodeBASE64AndDecrypt(encryptedText);
             plainTextField.setText(decryptedText);
         } catch (Exception e) {
             e.printStackTrace();
